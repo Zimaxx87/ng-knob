@@ -56,13 +56,14 @@
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl1">
               <div class="panel-heading">
-                <h3 class="panel-title">Skin Tron + scale <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Skin Tron + scale <span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
-                  <ui-knob value="value" options="options"></ui-knob>
+                  <ui-knob value="value" track-value="trackValue" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 65;
+$scope.trackValue = 80;
 $scope.options = {
   skin: {
     type: 'tron'
@@ -71,6 +72,7 @@ $scope.options = {
   unit: "%",
   barWidth: 40,
   trackColor: 'rgba(255,0,0,.1)',
+  trackValueColor:%20'rgba(255,0,0,.2)',
   prevBarColor: 'rgba(0,0,0,.2)',
   subText: {
     enabled: true,
@@ -90,13 +92,14 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl3">
               <div class="panel-heading">
-                <h3 class="panel-title">With subtext, unit and read only <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">With subtext, unit and read only <span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
-                  <ui-knob value="value" options="options"></ui-knob>
+                  <ui-knob value="value" track-value="trackValue" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 65;
+$scope.trackValue = 80;
 $scope.options = {
   unit: "%",
   readOnly: true,
@@ -109,6 +112,7 @@ $scope.options = {
   trackWidth: 40,
   barWidth: 25,
   trackColor: '#656D7F',
+  trackValueColor: '#F28482',
   barColor: '#2CC185'
 };</pre>
               </div>
@@ -117,7 +121,7 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl4">
               <div class="panel-heading">
-                <h3 class="panel-title">Bar cap and display previous value<span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Bar cap and display previous value<span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
                   <ui-knob value="value" options="options"></ui-knob>
@@ -139,13 +143,14 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl10">
               <div class="panel-heading">
-                <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Default Knob <span class="badge pull-right label-warning">{{value}}/{{trackValue}}</span></h3>
               </div>
               <div class="panel-body text-center">
-                  <ui-knob value="value" options="options"></ui-knob>
+                  <ui-knob value="value" track-value="trackValue" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 65;
+$scope.trackValue = 80;
 $scope.options = {
 };</pre>
               </div>
@@ -181,13 +186,14 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl5">
               <div class="panel-heading">
-                <h3 class="panel-title">Lines scale and step <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Lines scale and step <span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
-                  <ui-knob value="value" options="options"></ui-knob>
+                  <ui-knob value="value" track-value="trackValue" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 85;
+$scope.trackValue = 90;
 $scope.options = {
   scale: {
     enabled: true,
@@ -197,10 +203,12 @@ $scope.options = {
     quantity: 20,
     height: 8
   },
+  displaytrackvalue: false,
   trackWidth: 30,
   barWidth: 30,
   step: 5,
   trackColor: 'rgba(52,152,219,.1)',
+  trackValueColor: 'rgba(52,152,219,.3)',
   barColor: 'rgba(52,152,219,.5)'
 };</pre>
               </div>
@@ -257,7 +265,7 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl7">
               <div class="panel-heading">
-                <h3 class="panel-title">Dots scale + Dynamic options<span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Dots scale + Dynamic options<span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
                   <ui-knob value="value" options="options"></ui-knob>
@@ -311,18 +319,21 @@ $scope.options = {
           <div class="item">
             <div class="panel panel-primary" ng-controller="knobCtrl9">
               <div class="panel-heading">
-                <h3 class="panel-title">Background color <span class="badge pull-right label-warning">{{value}}</span></h3>
+                <h3 class="panel-title">Background color <span class="badge pull-right label-warning">{{value}}{{trackValue ? "/" + trackValue : ""}}</span></h3>
               </div>
               <div class="panel-body text-center">
-                  <ui-knob value="value" options="options"></ui-knob>
+                  <ui-knob value="value" track-value="trackValue" options="options"></ui-knob>
               </div>
               <div class="panel-footer">
 <pre>$scope.value = 65;
+$scope.trackValue = 15;
 $scope.options = {
+  displayTrackValue: false,
   bgColor: '#2C3E50',
   trackWidth: 50,
   barWidth: 30,
   barColor: '#FFAE1A',
+  trackValueColor: '#BC412B',
   textColor: '#eee'
 };</pre>
               </div>

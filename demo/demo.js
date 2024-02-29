@@ -3,6 +3,7 @@
 angular.module('KnobDemoApp', ['ui.knob'])
   .controller('knobCtrl1', function ($scope) {
     $scope.value = 65;
+    $scope.trackValue = 80;
     $scope.options = {
       skin: {
         type: 'tron'
@@ -14,6 +15,7 @@ angular.module('KnobDemoApp', ['ui.knob'])
       unit: "%",
       barWidth: 40,
       trackColor: 'rgba(255,0,0,.1)',
+      trackValueColor: 'rgba(255,0,0,.2)',
       prevBarColor: 'rgba(0,0,0,.2)',
       subText: {
         enabled: true,
@@ -47,6 +49,7 @@ angular.module('KnobDemoApp', ['ui.knob'])
   })
   .controller('knobCtrl3', function ($scope) {
     $scope.value = 65;
+    $scope.trackValue = 80;
     $scope.options = {
       unit: "%",
       readOnly: true,
@@ -59,6 +62,7 @@ angular.module('KnobDemoApp', ['ui.knob'])
       trackWidth: 40,
       barWidth: 25,
       trackColor: '#656D7F',
+      trackValueColor: '#1B512D',
       barColor: '#2CC185'
     };
   })
@@ -76,6 +80,7 @@ angular.module('KnobDemoApp', ['ui.knob'])
   })
   .controller('knobCtrl5', function ($scope) {
     $scope.value = 85;
+    $scope.trackValue = 90;
     $scope.options = {
       scale: {
         enabled: true,
@@ -85,10 +90,12 @@ angular.module('KnobDemoApp', ['ui.knob'])
         quantity: 20,
         height: 8
       },
+      displayTrackValue: false,
       trackWidth: 30,
       barWidth: 30,
       step: 5,
       trackColor: 'rgba(52,152,219,.1)',
+      trackValueColor: 'rgba(52,152,219,.3)',
       barColor: 'rgba(52,152,219,.5)'
     };
   })
@@ -141,16 +148,20 @@ angular.module('KnobDemoApp', ['ui.knob'])
   })
   .controller('knobCtrl9', function ($scope) {
     $scope.value = 65;
+    $scope.trackValue = 15;
     $scope.options = {
+      displayTrackValue: false,
       bgColor: '#2C3E50',
       trackWidth: 50,
       barWidth: 30,
       barColor: '#FFAE1A',
+      trackValueColor: '#774E24',
       textColor: '#eee'
     };
   })
   .controller('knobCtrl10', function ($scope) {
     $scope.value = 65;
+    $scope.trackValue = 80;
   })
   .controller('knobCtrl11', function ($scope) {
     $scope.value = 65;

@@ -1,6 +1,6 @@
 {
   "name": "ng-knob",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "authors": [
     "RadMie <radoslaw.mietkiewicz@gmail.com>"
   ],
@@ -28,7 +28,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "^1.4.x",
+    "angular": "^1.7.x",
     "d3": "^3.5.x"
   }
 }

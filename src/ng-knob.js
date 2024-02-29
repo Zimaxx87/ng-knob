@@ -6,10 +6,11 @@
   /**
    *   Constructor
    */
-  var Knob = function(element, value, options) {
+  var Knob = function(element, value, options, trackValue) {
     this.element = element;
     this.value = value;
     this.options = options;
+    this.trackValue = trackValue;
     this.inDrag = false;
   };
   /**
@@ -111,6 +112,7 @@
     var outerRadius = parseInt((this.options.size / 2), 10),
     startAngle = this.valueToRadians(this.options.startAngle, 360),
     endAngle = this.valueToRadians(this.options.endAngle, 360);
+    var endTrackValueAngle = this.valueToRadians(this.trackValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
     if(this.options.scale.enabled) {
       outerRadius -= this.options.scale.width + this.options.scale.spaceWidth;
     }
@@ -139,12 +141,12 @@
       //interactInnerRadius = outerRadius - this.options.trackWidth;
     }
     if(this.options.bgColor) {
-		if(this.options.bgFull){
-			this.bgArc = this.createArc(0, outerRadius, 0, Math.PI*2);
-		}
-		else{
-			this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
-		}
+		  if(this.options.bgFull){
+			  this.bgArc = this.createArc(0, outerRadius, 0, Math.PI*2);
+		  }
+		  else{
+			  this.bgArc = this.createArc(0, outerRadius, startAngle, endAngle);
+		  }
     }
     if(this.options.skin.type === 'tron') {
       trackOuterRadius = trackOuterRadius - this.options.skin.width - this.options.skin.spaceWidth;
@@ -172,6 +174,7 @@
     this.trackArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endAngle, this.options.trackCap);
     this.changeArc = this.createArc(changeInnerRadius, changeOuterRadius, startAngle, startAngle, this.options.barCap);
     this.valueArc = this.createArc(valueInnerRadius, valueOuterRadius, startAngle, startAngle, this.options.barCap);
+    this.trackValueArc = this.createArc(trackInnerRadius, trackOuterRadius, startAngle, endTrackValueAngle, this.options.trackCap);
     this.interactArc = this.createArc(interactInnerRadius, interactOuterRadius, startAngle, endAngle);
   };
   /**
@@ -188,9 +191,11 @@
     }
 
     if(this.options.displayInput) {
-      var fontSize = (this.options.size * 0.20) + "px";
+      var fs = this.options.size * 0.20;
+      var fontSize = fs + "px";
       if (this.options.fontSize !== 'auto') {
-        fontSize = this.options.fontSize + "px";
+        fs = this.options.fontSize;
+        fontSize = fs + "px";
       }
       if (this.options.step < 1) {
         this.value = this.value.toFixed(1);
@@ -199,15 +204,28 @@
       if (typeof this.options.inputFormatter === "function") {
         v = this.options.inputFormatter(v);
       }
+      var tv = this.trackValue;
+      if (typeof this.options.inputFormatter === "function") {
+        tv = this.options.inputFormatter(tv);
+      }
 
       svg.append('text')
-      .attr('id', 'text')
+      .attr('id', 'value-text')
       .attr("text-anchor", "middle")
       .attr("font-size", fontSize)
       .style("fill", this.getTextColor(this.options.ranges, this.value))
       .text(v + this.options.unit || "")
       .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06)) + ')');
 
+      if(this.options.displayTrackValue) {
+        svg.append('text')
+        .attr('id', 'track-value-text')
+        .attr("text-anchor", "middle")
+        .attr("font-size", fontSize/2)
+        .style("fill", this.options.trackValueColor)
+        .text(tv + this.options.unit || "")
+        .attr('transform', 'translate(' + ((this.options.size / 2)) + ', ' + ((this.options.size / 2) + (this.options.size*0.06) - fs) + ')');
+      }
 
       if(this.options.subText.enabled) {
         fontSize = (this.options.size*0.07) + "px";
@@ -307,6 +325,7 @@
       }
     }
     this.drawArc(svg, this.trackArc, 'trackArc', { "fill": this.options.trackColor });
+    this.drawArc(svg, this.trackValueArc, 'trackValueArc', { "fill": this.options.trackValueColor });
     if(this.options.displayPrevious) {
       this.changeElem = this.drawArc(svg, this.changeArc, 'changeArc', { "fill": this.options.prevBarColor });
     } else {
@@ -407,9 +426,9 @@
           if (typeof that.options.inputFormatter === "function"){
             v = that.options.inputFormatter(v);
           }
-          d3.select(that.element).select('#text').text(v + that.options.unit || "");
+          d3.select(that.element).select('#value-text').text(v + that.options.unit || "");
           // set text color at interaction
-          d3.select(that.element).select('#text').attr('style', 'fill: ' + that.getTextColor(that.options.ranges, that.value));
+          d3.select(that.element).select('#value-text').attr('style', 'fill: ' + that.getTextColor(that.options.ranges, that.value));
         }
       }
     }
@@ -436,9 +455,34 @@
         if (typeof this.options.inputFormatter === "function"){
           v = this.options.inputFormatter(v);
         }
-        d3.select(this.element).select('#text').text(v + this.options.unit || "");
+        d3.select(this.element).select('#value-text').text(v + this.options.unit || "");
         // test text color ove value changed
-        d3.select(this.element).select('#text').attr('style', 'fill: ' + this.getTextColor(this.options.ranges, this.value));
+        d3.select(this.element).select('#value-text').attr('style', 'fill: ' + this.getTextColor(this.options.ranges, this.value));
+      }
+    }
+  };
+
+  /**
+   *   Set a track value
+   */
+  Knob.prototype.setTrackValue = function(newTrackValue) {
+    if (this.trackValue >= this.options.min && this.trackValue <= this.options.max) {
+      var radians = this.valueToRadians(newTrackValue, this.options.max, this.options.endAngle, this.options.startAngle, this.options.min);
+      this.trackValue = Math.round(((~~ (((newTrackValue < 0) ? -0.5 : 0.5) + (newTrackValue/this.options.step))) * this.options.step) * 100) / 100;
+      if(this.options.step < 1) {
+        this.trackValue = this.trackValue.toFixed(1);
+      }
+      this.trackValueArc.endAngle(radians);
+      d3.select(this.element).select('#trackValueArc').attr('d', this.trackValueArc);
+
+      if(this.options.displayInput) {
+        var tv = this.trackValue;
+        if (typeof this.options.inputFormatter === "function"){
+          tv = this.options.inputFormatter(tv);
+        }
+        d3.select(this.element).select('#track-value-text').text(tv + this.options.unit || "");
+        // test text color ove value changed
+        d3.select(this.element).select('#track-value-text').attr('style', 'fill: ' + this.options.trackValueColor);
       }
     }
   };
@@ -452,10 +496,12 @@
       restrict: 'E',
       scope: {
         value: '=',
+        trackValue: '=?',
         options: '='
       },
-      link: function (scope, element) {
+      link: function (scope, element, attributes) {
         scope.value = scope.value || 0;
+        scope.trackValue = scope.trackValue || 0;
         var defaultOptions = {
           skin: {
             type: 'simple',
@@ -473,16 +519,18 @@
           endAngle: 360,
           unit: "",
           displayInput: true,
+          displayTrackValue: (angular.isUndefined(attributes.trackValue)) ? false : true,
           inputFormatter: function(v){ return v; },
           readOnly: false,
           trackWidth: 50,
           barWidth: 50,
           trackColor: "rgba(0,0,0,0)",
+          trackValueColor: "rgba(255,0,0,.4)",
           barColor: "rgba(255,0,0,.5)",
           prevBarColor: "rgba(0,0,0,0)",
           textColor: '#222',
           barCap: 0,
-		  trackCap: 0,
+		      trackCap: 0,
           fontSize: 'auto',
           subText: {
             enabled: false,
@@ -491,7 +539,7 @@
             font: "auto"
           },
           bgColor: '',
-		  bgFull: false,
+		      bgFull: false,
           scale: {
             enabled: false,
             type: 'lines',
@@ -510,11 +558,17 @@
           ranges: [ { min: 0, max: 100, barColor: "rgba(255,0,0,0,0.5", textColor: '#222' } ]
         };
         scope.options = angular.merge(defaultOptions, scope.options);
-        var knob = new ui.Knob(element[0], scope.value, scope.options);
+        var knob = new ui.Knob(element[0], scope.value, scope.options, scope.trackValue);
 
         scope.$watch('value', function(newValue, oldValue) {
           if((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
             knob.setValue(newValue);
+          }
+        });
+
+        scope.$watch('trackValue', function(newValue, oldValue) {
+          if((newValue !== null || typeof newValue !== 'undefined') && typeof oldValue !== 'undefined' && newValue !== oldValue) {
+            knob.setTrackValue(newValue);
           }
         });
 
@@ -525,7 +579,7 @@
                 isFirstWatchOnOptions = false;
               } else {
                 var newOptions = angular.merge(defaultOptions, scope.options);
-                knob = new ui.Knob(element[0], scope.value, newOptions);
+                knob = new ui.Knob(element[0], scope.value, newOptions, scope.trackValue);
                 drawKnob();
               }
           }, true);
